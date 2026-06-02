@@ -1,0 +1,16 @@
+{
+  "name": "executive-health",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Executive Health Intelligence System — B2C, B2B, Internal Ops",
+  "scripts": {
+    "dev:web": "pnpm --filter @executive-health/web dev",
+    "dev:dashboard": "pnpm --filter @executive-health/dashboard dev",
+    "dev:ops": "pnpm --filter @executive-health/ops dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
