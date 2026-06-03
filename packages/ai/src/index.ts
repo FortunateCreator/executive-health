@@ -4,10 +4,17 @@ import { computeHeuristicScore } from './heuristic';
 import { HEALTH_SCORING_SYSTEM_PROMPT, buildScoringPrompt, parseScoringResponse } from './prompts';
 import { aiConfig } from './config';
 
-const client = new OpenAI({
-  apiKey: process.env.DEEPSEEK_API_KEY,
-  baseURL: aiConfig.baseUrl,
-});
+let _client: OpenAI | null = null;
+
+function getClient(): OpenAI {
+  if (!_client) {
+    _client = new OpenAI({
+      apiKey: process.env.DEEPSEEK_API_KEY,
+      baseURL: aiConfig.baseUrl,
+    });
+  }
+  return _client;
+}
 
 /**
  * Score health intake data using DeepSeek Pro with heuristic fallback.
@@ -16,7 +23,7 @@ const client = new OpenAI({
 export async function scoreHealth(intakeData: IntakeFormData): Promise<HealthScore> {
   // ── try AI scoring ──
   try {
-    const completion = await client.chat.completions.create(
+    const completion = await getClient().chat.completions.create(
       {
         model: aiConfig.model,
         messages: [
