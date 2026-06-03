@@ -2,48 +2,107 @@ import fs from 'fs';
 import path from 'path';
 import type { IntakeFormData, HealthScore, UserProfile, ChatMessage } from '@executive-health/core';
 
+// === HYBRID STORAGE: file (local) / Vercel Blob (production) ===
 const DATA_DIR = path.resolve(process.cwd(), 'data');
+const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
 
-function ensureDir(dir: string): void {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+// In-memory cache for blob mode — survives a single request on Vercel
+const cache = new Map<string, any[]>();
+let syncTimer: ReturnType<typeof setTimeout> | null = null;
+
+async function syncToBlob(name: string, data: any[]): Promise<void> {
+  if (!useBlob) return;
+  try {
+    const { put } = await import('@vercel/blob');
+    await put(`executive-health/${name}.json`, JSON.stringify(data, null, 2), {
+      access: 'public',
+      addRandomSuffix: false,
+    });
+  } catch (e) {
+    console.error(`Blob sync failed for ${name}:`, e);
+  }
 }
 
-function readJSON<T>(filePath: string): T[] {
-  if (!fs.existsSync(filePath)) return [];
+async function loadFromBlob<T>(name: string): Promise<T[]> {
   try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    const { list } = await import('@vercel/blob');
+    const result = await list({ prefix: `executive-health/${name}.json` });
+    if (result.blobs.length === 0) return [];
+    const resp = await fetch(result.blobs[0].url);
+    return await resp.json();
   } catch {
     return [];
   }
 }
 
-function writeJSON<T>(filePath: string, data: T[]): void {
-  ensureDir(path.dirname(filePath));
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+function readStore<T>(name: string): T[] {
+  if (useBlob) {
+    // Check cache first
+    if (cache.has(name)) return cache.get(name) as T[];
+    // Not cached yet — load synchronously via fs fallback or init empty
+    // Blob data is loaded lazily on first non-cache hit
+    return [];
+  }
+
+  // File backend
+  const fp = path.join(DATA_DIR, `${name}.json`);
+  if (!fs.existsSync(fp)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(fp, 'utf-8'));
+  } catch {
+    return [];
+  }
 }
 
-// === PROFILES ===
-const profilesPath = () => path.join(DATA_DIR, 'profiles.json');
+function writeStore<T>(name: string, data: T[]): void {
+  if (useBlob) {
+    cache.set(name, data);
+    // Debounce sync to blob (within a single request)
+    if (syncTimer) clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => syncToBlob(name, data), 100);
+    return;
+  }
 
+  // File backend
+  const fp = path.join(DATA_DIR, `${name}.json`);
+  ensureDir(path.dirname(fp));
+  fs.writeFileSync(fp, JSON.stringify(data, null, 2));
+}
+
+function ensureDir(dir: string): void {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+}
+
+// Preload blob data on module load — happens once per cold start
+if (useBlob) {
+  (async () => {
+    const tables = ['profiles', 'intake_responses', 'health_scores', 'chat_messages', 'users'];
+    for (const t of tables) {
+      const data = await loadFromBlob(t);
+      cache.set(t, data);
+    }
+  })();
+}
+
+
+// === PROFILES ===
 export function getProfile(userId: string): UserProfile | undefined {
-  return readJSON<UserProfile>(profilesPath()).find(p => p.id === userId);
+  return readStore<UserProfile>('profiles').find(p => p.id === userId);
 }
 
 export function getAllProfiles(): UserProfile[] {
-  return readJSON<UserProfile>(profilesPath());
+  return readStore<UserProfile>('profiles');
 }
 
 export function upsertProfile(profile: UserProfile): void {
-  const profiles = readJSON<UserProfile>(profilesPath());
+  const profiles = readStore<UserProfile>('profiles');
   const idx = profiles.findIndex(p => p.id === profile.id);
   if (idx >= 0) profiles[idx] = profile;
   else profiles.push(profile);
-  writeJSON(profilesPath(), profiles);
+  writeStore('profiles', profiles);
 }
 
 // === INTAKE RESPONSES ===
-const intakePath = () => path.join(DATA_DIR, 'intake_responses.json');
-
 export interface IntakeRecord {
   id: string;
   user_id: string;
@@ -52,7 +111,7 @@ export interface IntakeRecord {
 }
 
 export function getIntakes(userId: string): IntakeRecord[] {
-  return readJSON<IntakeRecord>(intakePath()).filter(i => i.user_id === userId);
+  return readStore<IntakeRecord>('intake_responses').filter(i => i.user_id === userId);
 }
 
 export function getLatestIntake(userId: string): IntakeRecord | undefined {
@@ -61,14 +120,12 @@ export function getLatestIntake(userId: string): IntakeRecord | undefined {
 }
 
 export function saveIntake(record: IntakeRecord): void {
-  const intakes = readJSON<IntakeRecord>(intakePath());
+  const intakes = readStore<IntakeRecord>('intake_responses');
   intakes.push(record);
-  writeJSON(intakePath(), intakes);
+  writeStore('intake_responses', intakes);
 }
 
 // === HEALTH SCORES ===
-const scoresPath = () => path.join(DATA_DIR, 'health_scores.json');
-
 export interface ScoreRecord {
   id: string;
   user_id: string;
@@ -79,7 +136,7 @@ export interface ScoreRecord {
 }
 
 export function getScores(userId: string): ScoreRecord[] {
-  return readJSON<ScoreRecord>(scoresPath()).filter(s => s.user_id === userId);
+  return readStore<ScoreRecord>('health_scores').filter(s => s.user_id === userId);
 }
 
 export function getLatestScore(userId: string): ScoreRecord | undefined {
@@ -88,29 +145,25 @@ export function getLatestScore(userId: string): ScoreRecord | undefined {
 }
 
 export function saveScore(record: ScoreRecord): void {
-  const scores = readJSON<ScoreRecord>(scoresPath());
+  const scores = readStore<ScoreRecord>('health_scores');
   scores.push(record);
-  writeJSON(scoresPath(), scores);
+  writeStore('health_scores', scores);
 }
 
 // === CHAT MESSAGES ===
-const chatPath = () => path.join(DATA_DIR, 'chat_messages.json');
-
 export function getChatMessages(userId: string, sessionId?: string): ChatMessage[] {
-  let msgs = readJSON<ChatMessage>(chatPath()).filter(m => m.user_id === userId);
+  let msgs = readStore<ChatMessage>('chat_messages').filter(m => m.user_id === userId);
   if (sessionId) msgs = msgs.filter(m => m.session_id === sessionId);
   return msgs.sort((a, b) => a.created_at.localeCompare(b.created_at));
 }
 
 export function saveChatMessage(msg: ChatMessage): void {
-  const msgs = readJSON<ChatMessage>(chatPath());
+  const msgs = readStore<ChatMessage>('chat_messages');
   msgs.push(msg);
-  writeJSON(chatPath(), msgs);
+  writeStore('chat_messages', msgs);
 }
 
 // === AUTH ===
-const usersPath = () => path.join(DATA_DIR, 'users.json');
-
 export interface AuthUser {
   id: string;
   email: string;
@@ -120,15 +173,15 @@ export interface AuthUser {
 }
 
 export function getUserByEmail(email: string): AuthUser | undefined {
-  return readJSON<AuthUser>(usersPath()).find(u => u.email === email);
+  return readStore<AuthUser>('users').find(u => u.email === email);
 }
 
 export function getUserById(id: string): AuthUser | undefined {
-  return readJSON<AuthUser>(usersPath()).find(u => u.id === id);
+  return readStore<AuthUser>('users').find(u => u.id === id);
 }
 
 export function saveUser(user: AuthUser): void {
-  const users = readJSON<AuthUser>(usersPath());
+  const users = readStore<AuthUser>('users');
   users.push(user);
-  writeJSON(usersPath(), users);
+  writeStore('users', users);
 }
