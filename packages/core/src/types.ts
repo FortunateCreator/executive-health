@@ -49,7 +49,7 @@ export interface HealthScore {
   risk_category: RiskCategory;
   risk_factors: RiskFactor[];
   recommendations: string[];
-  score_breakdown: ScoreBreakdown;
+  score_breakdown: ScoreBreakdown[];
   calculated_at: string;     // ISO date
 }
 
