@@ -1,0 +1,187 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, displayName }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Registration failed');
+        return;
+      }
+
+      localStorage.setItem('token', data.token);
+      router.push('/ops');
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <div style={styles.logo}>🫀</div>
+        <h1 style={styles.title}>Create Ops Account</h1>
+        <p style={styles.subtitle}>Register for the operations dashboard.</p>
+
+        {error && <div style={styles.error}>{error}</div>}
+
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.field}>
+            <label style={styles.label} htmlFor="displayName">Name</label>
+            <input
+              id="displayName"
+              type="text"
+              value={displayName}
+              onChange={e => setDisplayName(e.target.value)}
+              placeholder="Dr. Jane Smith"
+              required
+            />
+          </div>
+
+          <div style={styles.field}>
+            <label style={styles.label} htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+              autoComplete="email"
+            />
+          </div>
+
+          <div style={styles.field}>
+            <label style={styles.label} htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              autoComplete="new-password"
+            />
+          </div>
+
+          <button type="submit" style={styles.submitBtn} disabled={loading}>
+            {loading ? 'Creating account...' : 'Create Account'}
+          </button>
+        </form>
+
+        <p style={styles.footer}>
+          Already have an account?{' '}
+          <Link href="/login" style={styles.link}>Sign in</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const styles: Record<string, React.CSSProperties> = {
+  container: {
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: '#0f0f23',
+    padding: '20px',
+  },
+  card: {
+    background: '#1a1a2e',
+    borderRadius: '16px',
+    padding: '40px',
+    maxWidth: '420px',
+    width: '100%',
+    border: '1px solid #2a2a4e',
+  },
+  logo: {
+    fontSize: '48px',
+    textAlign: 'center',
+    marginBottom: '16px',
+  },
+  title: {
+    fontSize: '28px',
+    fontWeight: 700,
+    textAlign: 'center',
+    color: '#e0e0e0',
+    marginBottom: '8px',
+  },
+  subtitle: {
+    fontSize: '14px',
+    textAlign: 'center',
+    color: '#6b7280',
+    marginBottom: '24px',
+    lineHeight: 1.5,
+  },
+  error: {
+    background: 'rgba(239, 68, 68, 0.1)',
+    border: '1px solid rgba(239, 68, 68, 0.3)',
+    color: '#ef4444',
+    padding: '10px 14px',
+    borderRadius: '8px',
+    fontSize: '13px',
+    marginBottom: '16px',
+    textAlign: 'center',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px',
+  },
+  field: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  label: {
+    fontSize: '13px',
+    fontWeight: 600,
+    color: '#a0a0b0',
+  },
+  submitBtn: {
+    marginTop: '8px',
+    background: '#1a5276',
+    color: '#fff',
+    border: 'none',
+    padding: '12px 28px',
+    borderRadius: '8px',
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+  },
+  footer: {
+    marginTop: '20px',
+    textAlign: 'center',
+    fontSize: '14px',
+    color: '#6b7280',
+  },
+  link: {
+    color: '#1a5276',
+    textDecoration: 'none',
+    fontWeight: 600,
+  },
+};

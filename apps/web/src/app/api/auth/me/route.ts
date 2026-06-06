@@ -24,3 +24,21 @@ export async function GET(request: NextRequest) {
   }
   return NextResponse.json({ user: profile });
 }
+
+export async function PATCH(request: NextRequest) {
+  const userId = getUserIdFromRequest(request);
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const { display_name } = await request.json();
+    let profile = getProfile(userId);
+    if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+
+    profile.display_name = display_name || profile.display_name;
+    upsertProfile(profile);
+
+    return NextResponse.json({ user: profile });
+  } catch {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+  }
+}

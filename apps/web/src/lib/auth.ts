@@ -1,9 +1,12 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
-import { saveUser, getUserByEmail, getUserById } from '@executive-health/db';
+import { saveUser, getUserByEmail, getUserById, updateUserPassword, saveResetCode, getResetCode, deleteResetCode } from '@executive-health/db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-fallback-secret';
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRY = '7d';
 
 export interface AuthResult {
@@ -64,4 +67,47 @@ export function getUserIdFromRequest(request: Request): string | null {
   if (!auth?.startsWith('Bearer ')) return null;
   const payload = verifyToken(auth.slice(7));
   return payload?.userId || null;
+}
+
+// ── Password Reset ──────────────────────────────────────────
+
+export async function requestPasswordReset(email: string): Promise<AuthResult> {
+  const user = getUserByEmail(email);
+  // Don't reveal if email exists — security best practice
+  if (!user) return { success: true };
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit
+  saveResetCode(email, code);
+
+  // In production, send via email. For dev, log to console.
+  console.log(`\n🔐 PASSWORD RESET CODE for ${email}: ${code}\n`);
+
+  return { success: true };
+}
+
+export async function resetPassword(email: string, code: string, newPassword: string): Promise<AuthResult> {
+  const user = getUserByEmail(email);
+  if (!user) return { success: false, error: 'Invalid request' };
+
+  const stored = getResetCode(email);
+  if (!stored) return { success: false, error: 'No reset code requested' };
+  if (stored.code !== code) return { success: false, error: 'Invalid code' };
+  if (new Date(stored.expires_at) < new Date()) {
+    deleteResetCode(email);
+    return { success: false, error: 'Code expired. Request a new one.' };
+  }
+
+  const password_hash = await bcrypt.hash(newPassword, 10);
+  updateUserPassword(user.id, password_hash);
+  deleteResetCode(email);
+
+  const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+    expiresIn: TOKEN_EXPIRY,
+  });
+
+  return {
+    success: true,
+    token,
+    user: { id: user.id, email: user.email, display_name: user.display_name },
+  };
 }

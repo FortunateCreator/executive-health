@@ -7,7 +7,15 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    // Check both localStorage and cookie for token
+    let token = localStorage.getItem('token');
+    if (!token) {
+      const match = document.cookie.match(/(?:^|;\s*)token=([^;]*)/);
+      if (match) {
+        token = decodeURIComponent(match[1]);
+        localStorage.setItem('token', token);
+      }
+    }
     if (token) {
       fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
         .then(r => r.json())

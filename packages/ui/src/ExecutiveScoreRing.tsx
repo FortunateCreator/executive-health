@@ -47,8 +47,7 @@ const ExecutiveScoreRing: React.FC<ExecutiveScoreRingProps> = ({
   const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
-    // Animate from 0 to score on mount
-    const duration = 1000;
+    const duration = 1200;
     const startTime = performance.now();
 
     function animate(currentTime: number) {
@@ -78,99 +77,128 @@ const ExecutiveScoreRing: React.FC<ExecutiveScoreRingProps> = ({
   const labelFontSize = Math.round(size * 0.06);
   const badgeFontSize = Math.round(size * 0.055);
 
-  const containerStyle: React.CSSProperties = {
-    display: 'inline-flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const ringContainerStyle: React.CSSProperties = {
-    position: 'relative',
-    width: size,
-    height: size,
-  };
-
-  const svgStyle: React.CSSProperties = {
-    transform: 'rotate(-90deg)',
-    width: size,
-    height: size,
-  };
-
-  const centerContentStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: size,
-    height: size,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    pointerEvents: 'none',
-  };
-
-  const scoreTextStyle: React.CSSProperties = {
-    fontSize,
-    fontWeight: 700,
-    color: '#ffffff',
-    lineHeight: 1,
-  };
-
-  const labelTextStyle: React.CSSProperties = {
-    fontSize: labelFontSize,
-    color: '#94a3b8',
-    marginTop: 4,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  };
-
-  const badgeStyle: React.CSSProperties = {
-    marginTop: 6,
-    padding: '2px 12px',
-    borderRadius: 9999,
-    backgroundColor: riskColor,
-    color: '#ffffff',
-    fontSize: badgeFontSize,
-    fontWeight: 600,
-  };
-
   return (
-    <div style={containerStyle}>
-      <div style={ringContainerStyle}>
-        <svg style={svgStyle} viewBox={`0 0 ${size} ${size}`}>
-          {/* Background ring */}
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            fill="none"
-            stroke="#1a1a2e"
-            strokeWidth={strokeWidth}
-          />
-          {/* Animated score arc */}
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            fill="none"
-            stroke={scoreColor}
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={dashOffset}
-            style={{
-              transition: 'stroke-dashoffset 0.3s ease',
-            }}
-          />
-        </svg>
-        <div style={centerContentStyle}>
-          <span style={scoreTextStyle}>{animatedScore}</span>
-          <span style={labelTextStyle}>HEALTH SCORE</span>
+    <>
+      <style>{`
+        .eh-score-ring-container {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+        .eh-score-ring-wrapper {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .eh-score-ring-svg {
+          transform: rotate(-90deg);
+          display: block;
+        }
+        .eh-score-ring-center {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          pointer-events: none;
+        }
+        .eh-score-ring-value {
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1;
+          transition: none;
+        }
+        .eh-score-ring-label {
+          color: #94a3b8;
+          margin-top: 2px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          line-height: 1;
+        }
+        .eh-score-ring-badge {
+          margin-top: clamp(4px, 1vw, 8px);
+          padding: 2px 12px;
+          border-radius: 9999px;
+          color: #ffffff;
+          font-weight: 600;
+          line-height: 1.4;
+          white-space: nowrap;
+        }
+
+        /* Pulse animation on the outer ring */
+        .eh-score-ring-glow {
+          animation: eh-pulse-ring 3s ease-in-out infinite;
+        }
+      `}</style>
+
+      <div className="eh-score-ring-container">
+        <div className="eh-score-ring-wrapper">
+          <svg
+            className="eh-score-ring-svg eh-score-ring-glow"
+            viewBox={`0 0 ${size} ${size}`}
+            style={{ width: size, height: size }}
+          >
+            {/* Subtle background glow */}
+            <circle
+              cx={center}
+              cy={center}
+              r={radius + 3}
+              fill="none"
+              stroke={scoreColor}
+              strokeWidth={1}
+              opacity={0.15}
+            />
+            {/* Background ring */}
+            <circle
+              cx={center}
+              cy={center}
+              r={radius}
+              fill="none"
+              stroke="#1a1a2e"
+              strokeWidth={strokeWidth}
+            />
+            {/* Animated score arc */}
+            <circle
+              cx={center}
+              cy={center}
+              r={radius}
+              fill="none"
+              stroke={scoreColor}
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={dashOffset}
+              style={{
+                transition: 'stroke-dashoffset 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              }}
+            />
+          </svg>
+          <div className="eh-score-ring-center">
+            <span className="eh-score-ring-value" style={{ fontSize }}>
+              {animatedScore}
+            </span>
+            <span className="eh-score-ring-label" style={{ fontSize: labelFontSize }}>
+              HEALTH SCORE
+            </span>
+          </div>
+        </div>
+        <div
+          className="eh-score-ring-badge"
+          style={{
+            backgroundColor: riskColor,
+            fontSize: badgeFontSize,
+          }}
+        >
+          {riskLabel}
         </div>
       </div>
-      <div style={badgeStyle}>{riskLabel}</div>
-    </div>
+    </>
   );
 };
 

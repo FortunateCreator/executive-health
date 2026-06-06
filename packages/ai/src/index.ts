@@ -60,7 +60,23 @@ export async function scoreHealth(intakeData: IntakeFormData): Promise<HealthSco
           }))
         : [],
       recommendations: Array.isArray(parsed.recommendations)
-        ? parsed.recommendations.map(String)
+        ? parsed.recommendations.map((rec: any) => {
+            if (typeof rec === 'string') {
+              // Legacy string format — wrap in structured object
+              return {
+                heading: rec.length > 50 ? rec.substring(0, 50) + '…' : rec,
+                detail: rec,
+                action: rec,
+                category: 'general',
+              };
+            }
+            return {
+              heading: String(rec.heading || 'Recommendation'),
+              detail: String(rec.detail || rec.heading || ''),
+              action: String(rec.action || rec.detail || rec.heading || ''),
+              category: (['cardiovascular', 'metabolic', 'lifestyle', 'mental_wellbeing', 'general'].includes(rec.category) ? rec.category : 'general') as 'cardiovascular' | 'metabolic' | 'lifestyle' | 'mental_wellbeing' | 'general',
+            };
+          })
         : [],
       score_breakdown: Array.isArray(parsed.score_breakdown)
         ? parsed.score_breakdown.map((sb: any) => ({
@@ -86,5 +102,21 @@ export async function scoreHealth(intakeData: IntakeFormData): Promise<HealthSco
     return score;
   }
 }
+
+// ── exports from new modules ──
+
+export { generateAlerts } from './predictive';
+export type { Alert } from './predictive';
+
+export { generateChatResponse, buildChatPrompt } from './chat-engine';
+export type { ChatContext } from './chat-engine';
+
+export {
+  generateMorningNudge,
+  generateMiddayNudge,
+  generateEveningNudge,
+  generateWeeklyNudge,
+} from './nudges';
+export type { Nudge } from './nudges';
 
 export default scoreHealth;

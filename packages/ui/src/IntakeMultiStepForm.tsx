@@ -9,30 +9,34 @@ interface IntakeMultiStepFormProps {
 // ── Styles ──────────────────────────────────────────────────
 const darkInput: React.CSSProperties = {
   width: '100%',
-  padding: '10px 14px',
-  borderRadius: 8,
-  border: '1px solid #2a2a4e',
+  padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)',
+  borderRadius: 10,
+  border: '1px solid var(--border)',
   backgroundColor: '#16213e',
   color: '#e2e8f0',
-  fontSize: 14,
+  fontSize: 'clamp(15px, 2.5vw, 16px)',
   outline: 'none',
   boxSizing: 'border-box',
+  transition: 'border-color 0.2s, box-shadow 0.2s',
+  minHeight: 48,
 };
 
 const darkSelect: React.CSSProperties = {
   ...darkInput,
   appearance: 'none',
   cursor: 'pointer',
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%2394a3b8'/%3E%3C/svg%3E")`,
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'right 14px center',
+  paddingRight: '36px',
 };
 
 const labelStyle: React.CSSProperties = {
   display: 'block',
   marginBottom: 6,
-  fontSize: 13,
-  fontWeight: 500,
-  color: '#94a3b8',
-  textTransform: 'uppercase',
-  letterSpacing: 0.5,
+  fontSize: 'clamp(13px, 2vw, 14px)',
+  fontWeight: 600,
+  color: '#cbd5e1',
 };
 
 const fieldGroup: React.CSSProperties = {
@@ -40,152 +44,115 @@ const fieldGroup: React.CSSProperties = {
 };
 
 const errorText: React.CSSProperties = {
-  color: '#ef4444',
+  color: '#f87171',
   fontSize: 12,
   marginTop: 4,
 };
 
-const cardStyle: React.CSSProperties = {
-  backgroundColor: '#1a1a2e',
-  borderRadius: 12,
-  padding: 32,
-  maxWidth: 640,
-  width: '100%',
-  margin: '0 auto',
+const stepHeading: React.CSSProperties = {
+  marginBottom: 24,
 };
 
-const btnBase: React.CSSProperties = {
-  padding: '10px 24px',
-  borderRadius: 8,
-  border: 'none',
-  fontSize: 14,
-  fontWeight: 600,
-  cursor: 'pointer',
-  transition: 'background-color 0.15s',
-};
-
-const btnPrimary: React.CSSProperties = {
-  ...btnBase,
-  backgroundColor: '#0f3460',
+const stepTitle: React.CSSProperties = {
   color: '#ffffff',
-};
-
-const btnSecondary: React.CSSProperties = {
-  ...btnBase,
-  backgroundColor: 'transparent',
-  color: '#94a3b8',
-  border: '1px solid #2a2a4e',
-};
-
-const btnDisabled: React.CSSProperties = {
-  ...btnBase,
-  backgroundColor: '#1e293b',
-  color: '#64748b',
-  cursor: 'not-allowed',
-};
-
-const stepIndicatorContainer: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  gap: 8,
-  marginBottom: 28,
-};
-
-const stepCircle = (active: boolean, completed: boolean): React.CSSProperties => ({
-  width: 32,
-  height: 32,
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: 13,
+  fontSize: 'clamp(18px, 3.5vw, 22px)',
   fontWeight: 700,
-  backgroundColor: active ? '#0f3460' : completed ? '#22c55e' : '#16213e',
-  color: '#ffffff',
-  border: active ? '2px solid #60a5fa' : '2px solid #2a2a4e',
-});
-
-const stepLine: React.CSSProperties = {
-  width: 24,
-  height: 2,
-  backgroundColor: '#2a2a4e',
-  alignSelf: 'center',
-  marginTop: -2,
+  marginBottom: 6,
+  marginTop: 0,
+  lineHeight: 1.2,
 };
 
-const buttonRow: React.CSSProperties = {
+const stepSubtitle: React.CSSProperties = {
+  color: '#94a3b8',
+  fontSize: 'clamp(13px, 2vw, 14px)',
+  lineHeight: 1.6,
+  margin: 0,
+};
+
+const progressLabel: React.CSSProperties = {
+  textAlign: 'center' as const,
+  fontSize: 12,
+  color: '#64748b',
+  marginBottom: 24,
+};
+
+const radioGroup: React.CSSProperties = {
   display: 'flex',
-  justifyContent: 'space-between',
-  marginTop: 28,
+  flexDirection: 'column',
+  gap: 8,
 };
 
-const tagStyle = (selected: boolean): React.CSSProperties => ({
-  padding: '6px 14px',
-  borderRadius: 9999,
-  border: selected ? '2px solid #60a5fa' : '1px solid #2a2a4e',
-  backgroundColor: selected ? '#0f3460' : '#16213e',
-  color: selected ? '#ffffff' : '#94a3b8',
-  fontSize: 13,
-  cursor: 'pointer',
-  transition: 'all 0.15s',
-  whiteSpace: 'nowrap',
-});
-
-const rangeInput: React.CSSProperties = {
-  ...darkInput,
-  padding: '8px 12px',
+const skipNote: React.CSSProperties = {
+  background: 'rgba(15, 52, 96, 0.3)',
+  border: '1px solid #0f3460',
+  borderRadius: 10,
+  padding: '12px 16px',
+  fontSize: 'clamp(12px, 1.8vw, 13px)',
+  color: '#94a3b8',
+  lineHeight: 1.6,
+  marginBottom: 20,
 };
 
 // ── Step definitions ────────────────────────────────────────
-const STEPS = ['Basic Info', 'Lifestyle', 'Sleep & Stress', 'Health History', 'Vitals'];
+const STEPS = [
+  'Welcome',
+  'About You',
+  'Daily Habits',
+  'Rest & Recovery',
+  'Health Background',
+  'Vitals',
+];
 
+const TOTAL_FORM_STEPS = STEPS.length - 1; // excluding welcome
+
+// ── Option definitions with friendly labels ──────────────────
 const ACTIVITY_OPTIONS = [
-  { value: 'sedentary', label: 'Sedentary' },
-  { value: 'light', label: 'Lightly Active' },
-  { value: 'moderate', label: 'Moderately Active' },
-  { value: 'active', label: 'Active' },
-  { value: 'very_active', label: 'Very Active' },
+  { value: 'sedentary', label: 'Mostly sitting — desk job, little exercise' },
+  { value: 'light', label: 'Light activity — walking, occasional exercise' },
+  { value: 'moderate', label: 'Regular exercise 2–3 times a week' },
+  { value: 'active', label: 'Active most days — workouts, sports' },
+  { value: 'very_active', label: 'Training daily — high intensity or physical job' },
 ];
 
 const SMOKING_OPTIONS = [
-  { value: 'never', label: 'Never Smoked' },
-  { value: 'former', label: 'Former Smoker' },
-  { value: 'current', label: 'Current Smoker' },
+  { value: 'never', label: 'No, never smoked' },
+  { value: 'former', label: 'I used to smoke, but I quit' },
+  { value: 'current', label: 'Yes, I currently smoke' },
 ];
 
 const ALCOHOL_OPTIONS = [
-  { value: 'never', label: 'Never' },
-  { value: 'occasionally', label: 'Occasionally' },
-  { value: 'moderately', label: 'Moderately' },
-  { value: 'frequently', label: 'Frequently' },
+  { value: 'never', label: "I don't drink" },
+  { value: 'occasionally', label: 'A few drinks a month' },
+  { value: 'moderately', label: 'A few drinks a week' },
+  { value: 'frequently', label: 'Most days' },
 ];
 
 const DIET_OPTIONS = [
-  { value: 'poor', label: 'Poor' },
-  { value: 'fair', label: 'Fair' },
-  { value: 'good', label: 'Good' },
-  { value: 'excellent', label: 'Excellent' },
+  { value: 'poor', label: 'A lot of processed & fast food' },
+  { value: 'fair', label: 'Mix of healthy and not-so-great choices' },
+  { value: 'good', label: 'Mostly whole foods, balanced meals' },
+  { value: 'excellent', label: 'Carefully balanced, nutrient-rich diet' },
 ];
 
 const SLEEP_QUALITY_OPTIONS = [
-  { value: 'poor', label: 'Poor' },
-  { value: 'fair', label: 'Fair' },
-  { value: 'good', label: 'Good' },
-  { value: 'excellent', label: 'Excellent' },
+  { value: 'poor', label: 'I toss and turn — rarely feel rested' },
+  { value: 'fair', label: 'Could be better — some restless nights' },
+  { value: 'good', label: 'I sleep pretty well most nights' },
+  { value: 'excellent', label: 'Deep, restorative sleep every night' },
 ];
 
 const STRESS_OPTIONS = [
-  { value: 'low', label: 'Low' },
-  { value: 'moderate', label: 'Moderate' },
-  { value: 'high', label: 'High' },
-  { value: 'very_high', label: 'Very High' },
+  { value: 'low', label: 'Pretty calm — I manage stress well' },
+  { value: 'moderate', label: 'Some pressure, but it feels manageable' },
+  { value: 'high', label: "A lot on my plate — often feel stressed" },
+  { value: 'very_high', label: 'Overwhelming — it affects my daily life' },
 ];
 
 const SOCIAL_OPTIONS = [
-  { value: 'isolated', label: 'Isolated' },
-  { value: 'limited', label: 'Limited' },
-  { value: 'moderate', label: 'Moderate' },
-  { value: 'strong', label: 'Strong' },
+  { value: 'isolated', label: 'I keep to myself mostly' },
+  { value: 'limited', label: 'A few close connections' },
+  { value: 'moderate', label: 'Regular social contact with friends & family' },
+  { value: 'strong', label: 'Rich, supportive network of people I can lean on' },
 ];
 
 const CHRONIC_CONDITIONS = [
@@ -197,6 +164,12 @@ const CHRONIC_CONDITIONS = [
 const FAMILY_HISTORY_OPTIONS = [
   'Heart Disease', 'Diabetes', 'Cancer', 'Stroke',
   "Alzheimer's", 'Hypertension', 'Mental Illness',
+];
+
+const GENDER_OPTIONS = [
+  { value: 'male', label: 'Male', emoji: '♂️' },
+  { value: 'female', label: 'Female', emoji: '♀️' },
+  { value: 'other', label: 'Other / Prefer not to say', emoji: '⚧' },
 ];
 
 // ── Form state type ─────────────────────────────────────────
@@ -234,7 +207,7 @@ const initialFormState: FormFields = {
   smoking_status: '',
   alcohol_frequency: '',
   diet_quality: '',
-  sleep_hours: '',
+  sleep_hours: 7,
   sleep_quality: '',
   stress_level: '',
   chronic_conditions: [],
@@ -258,6 +231,7 @@ const IntakeMultiStepForm: React.FC<IntakeMultiStepFormProps> = ({
   const [step, setStep] = useState(0);
   const [fields, setFields] = useState<FormFields>(initialFormState);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [animDirection, setAnimDirection] = useState<'forward' | 'back'>('forward');
 
   const update = useCallback(
     (key: keyof FormFields, value: string | number | string[]) => {
@@ -292,31 +266,32 @@ const IntakeMultiStepForm: React.FC<IntakeMultiStepFormProps> = ({
 
       switch (s) {
         case 0: {
-          if (fields.age === '' || Number(fields.age) < 18 || Number(fields.age) > 120)
-            errs.age = 'Age must be 18–120';
-          if (!fields.gender) errs.gender = 'Please select gender';
-          break;
+          return true;
         }
         case 1: {
-          if (!fields.activity_level) errs.activity_level = 'Required';
-          if (!fields.smoking_status) errs.smoking_status = 'Required';
-          if (!fields.alcohol_frequency) errs.alcohol_frequency = 'Required';
-          if (!fields.diet_quality) errs.diet_quality = 'Required';
+          if (fields.age === '' || Number(fields.age) < 18 || Number(fields.age) > 120)
+            errs.age = 'Please enter a valid age (18–120)';
+          if (!fields.gender) errs.gender = 'Please select an option';
           break;
         }
         case 2: {
-          if (fields.sleep_hours === '' || Number(fields.sleep_hours) < 3 || Number(fields.sleep_hours) > 14)
-            errs.sleep_hours = 'Sleep hours must be 3–14';
-          if (!fields.sleep_quality) errs.sleep_quality = 'Required';
-          if (!fields.stress_level) errs.stress_level = 'Required';
+          if (!fields.activity_level) errs.activity_level = 'Please tell us about your activity level';
+          if (!fields.smoking_status) errs.smoking_status = 'Please select an option';
+          if (!fields.alcohol_frequency) errs.alcohol_frequency = 'Please select an option';
+          if (!fields.diet_quality) errs.diet_quality = 'Please tell us about your eating habits';
           break;
         }
         case 3: {
-          // Health History — all optional
+          if (fields.sleep_hours === '' || Number(fields.sleep_hours) < 3 || Number(fields.sleep_hours) > 14)
+            errs.sleep_hours = 'Please set your sleep hours (3–14)';
+          if (!fields.sleep_quality) errs.sleep_quality = "Please tell us how well you're sleeping";
+          if (!fields.stress_level) errs.stress_level = 'Please tell us about your stress level';
           break;
         }
         case 4: {
-          // Vitals — all optional, but validate ranges if provided
+          break;
+        }
+        case 5: {
           if (fields.systolic_bp !== '' && (Number(fields.systolic_bp) < 70 || Number(fields.systolic_bp) > 250))
             errs.systolic_bp = 'Must be 70–250';
           if (fields.diastolic_bp !== '' && (Number(fields.diastolic_bp) < 40 || Number(fields.diastolic_bp) > 150))
@@ -341,11 +316,15 @@ const IntakeMultiStepForm: React.FC<IntakeMultiStepFormProps> = ({
 
   const handleNext = () => {
     if (validateStep(step)) {
+      setAnimDirection('forward');
       setStep((s) => Math.min(s + 1, STEPS.length - 1));
     }
   };
 
-  const handlePrev = () => setStep((s) => Math.max(s - 1, 0));
+  const handlePrev = () => {
+    setAnimDirection('back');
+    setStep((s) => Math.max(s - 1, 0));
+  };
 
   const handleSubmit = () => {
     if (!validateStep(step)) return;
@@ -380,259 +359,475 @@ const IntakeMultiStepForm: React.FC<IntakeMultiStepFormProps> = ({
     onSubmit(data);
   };
 
+  // ── Progress ──────────────────────────────────────────────
+  const progressPct = Math.round((step / TOTAL_FORM_STEPS) * 100);
+  const completedSteps = step;
+
+  // ── Dynamic styles ────────────────────────────────────────
+  const getStepCircle = (active: boolean, completed: boolean): React.CSSProperties => ({
+    width: 'clamp(26px, 4vw, 30px)',
+    height: 'clamp(26px, 4vw, 30px)',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 12,
+    fontWeight: 700,
+    backgroundColor: active ? 'var(--accent)' : completed ? '#22c55e' : '#16213e',
+    color: '#ffffff',
+    border: active ? '2px solid #60a5fa' : completed ? '2px solid #22c55e' : '2px solid var(--border)',
+    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    flexShrink: 0,
+  });
+
+  const getRadioOption = (selected: boolean): React.CSSProperties => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)',
+    borderRadius: 10,
+    border: selected ? '2px solid #60a5fa' : '1px solid var(--border)',
+    backgroundColor: selected ? 'rgba(15, 52, 96, 0.4)' : '#16213e',
+    color: selected ? '#ffffff' : '#cbd5e1',
+    fontSize: 'clamp(13px, 2vw, 14px)',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    minHeight: 48,
+  });
+
+  const getRadioDot = (selected: boolean): React.CSSProperties => ({
+    width: 18,
+    height: 18,
+    borderRadius: '50%',
+    border: selected ? '5px solid #60a5fa' : '2px solid #475569',
+    backgroundColor: selected ? '#ffffff' : 'transparent',
+    flexShrink: 0,
+    transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+  });
+
+  const getTagStyle = (selected: boolean): React.CSSProperties => ({
+    padding: 'clamp(8px, 1.5vw, 10px) clamp(14px, 2.5vw, 16px)',
+    borderRadius: 9999,
+    border: selected ? '2px solid #60a5fa' : '1px solid var(--border)',
+    backgroundColor: selected ? 'var(--accent)' : '#16213e',
+    color: selected ? '#ffffff' : '#94a3b8',
+    fontSize: 'clamp(13px, 2vw, 14px)',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    whiteSpace: 'nowrap',
+    minHeight: 40,
+    display: 'inline-flex',
+    alignItems: 'center',
+    userSelect: 'none',
+  });
+
   // ── Render ────────────────────────────────────────────────
   return (
-    <div style={cardStyle}>
-      {/* Step indicator */}
-      <div style={stepIndicatorContainer}>
-        {STEPS.map((label, i) => (
-          <React.Fragment key={label}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-              <div style={stepCircle(i === step, i < step)}>
-                {i < step ? '✓' : i + 1}
-              </div>
-              <span style={{ fontSize: 10, color: i === step ? '#60a5fa' : '#64748b', whiteSpace: 'nowrap' }}>
-                {label}
-              </span>
-            </div>
-            {i < STEPS.length - 1 && <div style={stepLine} />}
-          </React.Fragment>
-        ))}
+    <div className="eh-intake-card" style={{
+      backgroundColor: 'var(--bg-card)',
+      borderRadius: 'clamp(14px, 3vw, 16px)',
+      padding: 'clamp(20px, 5vw, 36px)',
+      maxWidth: 640,
+      width: '100%',
+      margin: '0 auto',
+      border: '1px solid var(--border-light)',
+      boxSizing: 'border-box',
+      animation: 'eh-fade-in-up 0.35s ease forwards',
+    }}>
+      <style>{`
+        .eh-intake-grid-2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: clamp(12px, 2.5vw, 16px);
+        }
+        .eh-intake-step-content {
+          animation-duration: 0.3s;
+          animation-fill-mode: forwards;
+        }
+        .eh-intake-step-forward {
+          animation-name: eh-intake-slide-forward;
+        }
+        .eh-intake-step-back {
+          animation-name: eh-intake-slide-back;
+        }
+        @keyframes eh-intake-slide-forward {
+          from { opacity: 0; transform: translateX(20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes eh-intake-slide-back {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .eh-intake-btn {
+          padding: clamp(12px, 2.5vw, 14px) clamp(20px, 4vw, 28px);
+          border-radius: 10;
+          border: none;
+          font-size: clamp(14px, 2.2vw, 15px);
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          min-height: 48px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .eh-intake-btn:active { transform: scale(0.97); }
+        .eh-intake-btn-primary {
+          background: var(--accent-light);
+          color: #ffffff;
+        }
+        .eh-intake-btn-primary:hover {
+          background: #4f46e5;
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+          transform: translateY(-1px);
+        }
+        .eh-intake-btn-secondary {
+          background: transparent;
+          color: #94a3b8;
+          border: 1px solid var(--border);
+        }
+        .eh-intake-btn-secondary:hover {
+          border-color: rgba(255, 255, 255, 0.2);
+          color: #cbd5e1;
+        }
+        .eh-intake-btn-success {
+          background: #22c55e;
+          color: #ffffff;
+        }
+        .eh-intake-btn-success:hover {
+          background: #16a34a;
+          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+          transform: translateY(-1px);
+        }
+        .eh-intake-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none !important;
+          box-shadow: none !important;
+        }
+        .eh-intake-range {
+          min-height: 44px;
+          cursor: pointer;
+          width: 100%;
+          accent-color: #60a5fa;
+          margin-top: 4px;
+        }
+        .eh-intake-progress-bar {
+          height: 4px;
+          background: #16213e;
+          border-radius: 2px;
+          margin-bottom: 20px;
+          overflow: hidden;
+        }
+        .eh-intake-progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #60a5fa, #818cf8);
+          border-radius: 2px;
+          transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .eh-intake-step-line {
+          width: clamp(14px, 3vw, 24px);
+          height: 2px;
+          background: var(--border);
+          flex-shrink: 0;
+          border-radius: 1px;
+        }
+        .eh-intake-step-line-completed {
+          background: #22c55e;
+        }
+        .eh-intake-card:focus-within {
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        @media (max-width: 480px) {
+          .eh-intake-grid-2 {
+            grid-template-columns: 1fr !important;
+            gap: 12px;
+          }
+          .eh-intake-card {
+            padding: clamp(14px, 3vw, 18px) !important;
+            border-radius: 16px !important;
+          }
+          .eh-intake-welcome {
+            padding: clamp(12px, 4vw, 20px) 0 clamp(6px, 1.5vw, 10px) !important;
+          }
+          .eh-intake-btn-row {
+            flex-direction: column !important;
+          }
+          .eh-intake-btn-row button {
+            width: 100% !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .eh-intake-grid-2 {
+            gap: 12px;
+          }
+        }
+      `}</style>
+
+      {/* Progress bar */}
+      <div className="eh-intake-progress-bar">
+        <div
+          className="eh-intake-progress-fill"
+          style={{ width: `${progressPct}%` }}
+        />
+      </div>
+      <div style={progressLabel}>
+        {step === 0
+          ? 'Let\'s get started'
+          : `${completedSteps} of ${TOTAL_FORM_STEPS} steps complete · ${progressPct}%`}
       </div>
 
-      {/* ── Step 0: Basic Info ── */}
-      {step === 0 && (
-        <div>
-          <h3 style={{ color: '#ffffff', fontSize: 18, marginBottom: 20 }}>Basic Information</h3>
+      {/* Step indicator dots — skip for welcome */}
+      {step > 0 && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 6,
+          marginBottom: 8,
+          flexWrap: 'wrap',
+        }}>
+          {STEPS.filter((_, i) => i > 0).map((label, i) => {
+            const realIndex = i + 1;
+            const isCompleted = realIndex < step;
+            return (
+              <React.Fragment key={label}>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 4,
+                }}>
+                  <div style={
+                    getStepCircle(realIndex === step, isCompleted)
+                  }>
+                    {isCompleted ? '✓' : i + 1}
+                  </div>
+                  <span style={{
+                    fontSize: 'clamp(9px, 1.5vw, 10px)',
+                    color: realIndex === step ? '#60a5fa' : isCompleted ? '#22c55e' : '#64748b',
+                    fontWeight: realIndex === step ? 600 : 400,
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {label}
+                  </span>
+                </div>
+                {i < STEPS.length - 2 && (
+                  <div className={`eh-intake-step-line${isCompleted ? ' eh-intake-step-line-completed' : ''}`} />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      )}
 
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Age</label>
-            <input
-              type="number"
-              min={18}
-              max={120}
-              value={fields.age}
-              onChange={(e) => update('age', e.target.value === '' ? '' : Number(e.target.value))}
-              style={darkInput}
-              placeholder="e.g. 42"
-            />
-            {errors.age && <div style={errorText}>{errors.age}</div>}
-          </div>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Gender</label>
-            <select
-              value={fields.gender}
-              onChange={(e) => update('gender', e.target.value)}
-              style={darkSelect}
+      {/* ── Step content with animation ── */}
+      <div
+        className={`eh-intake-step-content ${animDirection === 'forward' ? 'eh-intake-step-forward' : 'eh-intake-step-back'}`}
+        key={step}
+      >
+        {/* ── Step 0: Welcome ── */}
+        {step === 0 && (
+          <div className="eh-intake-welcome" style={{
+            textAlign: 'center',
+            padding: 'clamp(20px, 5vw, 32px) 0 clamp(8px, 2vw, 16px)',
+          }}>
+            <div style={{
+              fontSize: 'clamp(48px, 10vw, 64px)',
+              marginBottom: 16,
+              animation: 'eh-pulse-gentle 3s ease-in-out infinite',
+            }}>
+              🫀
+            </div>
+            <h2 style={{
+              color: '#ffffff',
+              fontSize: 'clamp(20px, 4vw, 26px)',
+              fontWeight: 700,
+              marginBottom: 12,
+              marginTop: 0,
+              lineHeight: 1.2,
+            }}>
+              Welcome to Your Executive Health Score
+            </h2>
+            <p style={{
+              color: '#94a3b8',
+              fontSize: 'clamp(14px, 2.3vw, 15px)',
+              lineHeight: 1.7,
+              maxWidth: 480,
+              margin: '0 auto 8px',
+              padding: '0 8px',
+            }}>
+              We&apos;ll ask a few questions about your lifestyle and health to generate your personalized assessment.
+            </p>
+            <p style={{
+              color: '#64748b',
+              fontSize: 'clamp(13px, 2vw, 14px)',
+              lineHeight: 1.7,
+              maxWidth: 420,
+              margin: '0 auto 28px',
+              padding: '0 8px',
+            }}>
+              It takes about <strong style={{ color: '#cbd5e1' }}>3 minutes</strong> and your answers help us build a complete picture of your health.
+            </p>
+            <button
+              className="eh-intake-btn eh-intake-btn-success"
+              style={{
+                padding: 'clamp(14px, 3vw, 16px) clamp(32px, 6vw, 44px)',
+                fontSize: 'clamp(15px, 2.5vw, 17px)',
+                borderRadius: 12,
+              }}
+              onClick={handleNext}
             >
-              <option value="">Select gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-            {errors.gender && <div style={errorText}>{errors.gender}</div>}
+              Begin Assessment →
+            </button>
           </div>
+        )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        {/* ── Step 1: About You ── */}
+        {step === 1 && (
+          <div>
+            <div style={stepHeading}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>🧑</div>
+              <h3 style={stepTitle}>Let&apos;s get to know you</h3>
+              <p style={stepSubtitle}>
+                Basic details help us personalize your results and calculate important health metrics.
+              </p>
+            </div>
+
             <div style={fieldGroup}>
-              <label style={labelStyle}>Height (cm)</label>
+              <label style={labelStyle}>How old are you?</label>
               <input
                 type="number"
-                min={100}
-                max={250}
-                value={fields.height_cm}
-                onChange={(e) => update('height_cm', e.target.value === '' ? '' : Number(e.target.value))}
+                min={18}
+                max={120}
+                value={fields.age}
+                onChange={(e) => update('age', e.target.value === '' ? '' : Number(e.target.value))}
                 style={darkInput}
-                placeholder="e.g. 175"
+                placeholder="Enter your age"
               />
+              {errors.age && <div style={errorText}>{errors.age}</div>}
             </div>
+
             <div style={fieldGroup}>
-              <label style={labelStyle}>Weight (kg)</label>
-              <input
-                type="number"
-                min={30}
-                max={300}
-                value={fields.weight_kg}
-                onChange={(e) => update('weight_kg', e.target.value === '' ? '' : Number(e.target.value))}
-                style={darkInput}
-                placeholder="e.g. 78"
-              />
+              <label style={labelStyle}>Sex</label>
+              <div style={radioGroup}>
+                {GENDER_OPTIONS.map((opt) => (
+                  <div
+                    key={opt.value}
+                    style={getRadioOption(fields.gender === opt.value)}
+                    onClick={() => update('gender', opt.value)}
+                  >
+                    <div style={getRadioDot(fields.gender === opt.value)} />
+                    <span>{opt.emoji} {opt.label}</span>
+                  </div>
+                ))}
+              </div>
+              {errors.gender && <div style={errorText}>{errors.gender}</div>}
+            </div>
+
+            <div className="eh-intake-grid-2">
+              <div style={fieldGroup}>
+                <label style={labelStyle}>Height (cm)</label>
+                <input
+                  type="number"
+                  min={100}
+                  max={250}
+                  value={fields.height_cm}
+                  onChange={(e) => update('height_cm', e.target.value === '' ? '' : Number(e.target.value))}
+                  style={darkInput}
+                  placeholder="e.g. 175"
+                />
+              </div>
+              <div style={fieldGroup}>
+                <label style={labelStyle}>Weight (kg)</label>
+                <input
+                  type="number"
+                  min={30}
+                  max={300}
+                  value={fields.weight_kg}
+                  onChange={(e) => update('weight_kg', e.target.value === '' ? '' : Number(e.target.value))}
+                  style={darkInput}
+                  placeholder="e.g. 78"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ── Step 1: Lifestyle ── */}
-      {step === 1 && (
-        <div>
-          <h3 style={{ color: '#ffffff', fontSize: 18, marginBottom: 20 }}>Lifestyle</h3>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Activity Level</label>
-            <select
-              value={fields.activity_level}
-              onChange={(e) => update('activity_level', e.target.value)}
-              style={darkSelect}
-            >
-              <option value="">Select activity level</option>
-              {ACTIVITY_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            {errors.activity_level && <div style={errorText}>{errors.activity_level}</div>}
-          </div>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Smoking Status</label>
-            <select
-              value={fields.smoking_status}
-              onChange={(e) => update('smoking_status', e.target.value)}
-              style={darkSelect}
-            >
-              <option value="">Select smoking status</option>
-              {SMOKING_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            {errors.smoking_status && <div style={errorText}>{errors.smoking_status}</div>}
-          </div>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Alcohol Frequency</label>
-            <select
-              value={fields.alcohol_frequency}
-              onChange={(e) => update('alcohol_frequency', e.target.value)}
-              style={darkSelect}
-            >
-              <option value="">Select alcohol frequency</option>
-              {ALCOHOL_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            {errors.alcohol_frequency && <div style={errorText}>{errors.alcohol_frequency}</div>}
-          </div>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Diet Quality</label>
-            <select
-              value={fields.diet_quality}
-              onChange={(e) => update('diet_quality', e.target.value)}
-              style={darkSelect}
-            >
-              <option value="">Select diet quality</option>
-              {DIET_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            {errors.diet_quality && <div style={errorText}>{errors.diet_quality}</div>}
-          </div>
-        </div>
-      )}
-
-      {/* ── Step 2: Sleep & Stress ── */}
-      {step === 2 && (
-        <div>
-          <h3 style={{ color: '#ffffff', fontSize: 18, marginBottom: 20 }}>Sleep & Stress</h3>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Sleep Hours (per night): {fields.sleep_hours || '—'}</label>
-            <input
-              type="range"
-              min={3}
-              max={14}
-              step={0.5}
-              value={fields.sleep_hours || 7}
-              onChange={(e) => update('sleep_hours', Number(e.target.value))}
-              style={{ width: '100%', accentColor: '#0f3460' }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#64748b' }}>
-              <span>3h</span><span>7h</span><span>14h</span>
+        {/* ── Step 2: Daily Habits ── */}
+        {step === 2 && (
+          <div>
+            <div style={stepHeading}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>🏃</div>
+              <h3 style={stepTitle}>How&apos;s your daily routine?</h3>
+              <p style={stepSubtitle}>
+                Your day-to-day choices have a big impact on long-term health. Be honest — there are no wrong answers.
+              </p>
             </div>
-            {errors.sleep_hours && <div style={errorText}>{errors.sleep_hours}</div>}
-          </div>
 
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Sleep Quality</label>
-            <select
-              value={fields.sleep_quality}
-              onChange={(e) => update('sleep_quality', e.target.value)}
-              style={darkSelect}
-            >
-              <option value="">Select sleep quality</option>
-              {SLEEP_QUALITY_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            {errors.sleep_quality && <div style={errorText}>{errors.sleep_quality}</div>}
-          </div>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Stress Level</label>
-            <select
-              value={fields.stress_level}
-              onChange={(e) => update('stress_level', e.target.value)}
-              style={darkSelect}
-            >
-              <option value="">Select stress level</option>
-              {STRESS_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            {errors.stress_level && <div style={errorText}>{errors.stress_level}</div>}
-          </div>
-        </div>
-      )}
-
-      {/* ── Step 3: Health History ── */}
-      {step === 3 && (
-        <div>
-          <h3 style={{ color: '#ffffff', fontSize: 18, marginBottom: 20 }}>Health History</h3>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Chronic Conditions</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {CHRONIC_CONDITIONS.map((c) => (
-                <span
-                  key={c}
-                  style={tagStyle(fields.chronic_conditions.includes(c))}
-                  onClick={() => toggleArray('chronic_conditions', c)}
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Medications (comma-separated)</label>
-            <input
-              type="text"
-              value={fields.medications}
-              onChange={(e) => update('medications', e.target.value)}
-              style={darkInput}
-              placeholder="e.g. Lisinopril, Metformin"
-            />
-          </div>
-
-          <div style={fieldGroup}>
-            <label style={labelStyle}>Family History</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {FAMILY_HISTORY_OPTIONS.map((c) => (
-                <span
-                  key={c}
-                  style={tagStyle(fields.family_history.includes(c))}
-                  onClick={() => toggleArray('family_history', c)}
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div style={fieldGroup}>
-              <label style={labelStyle}>Work Hours / Week</label>
+              <label style={labelStyle}>How active are you during a typical week?</label>
+              <select
+                value={fields.activity_level}
+                onChange={(e) => update('activity_level', e.target.value)}
+                style={darkSelect}
+              >
+                <option value="">Select your activity level</option>
+                {ACTIVITY_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+              {errors.activity_level && <div style={errorText}>{errors.activity_level}</div>}
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>Do you smoke?</label>
+              <select
+                value={fields.smoking_status}
+                onChange={(e) => update('smoking_status', e.target.value)}
+                style={darkSelect}
+              >
+                <option value="">Select an option</option>
+                {SMOKING_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+              {errors.smoking_status && <div style={errorText}>{errors.smoking_status}</div>}
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>How often do you drink alcohol?</label>
+              <select
+                value={fields.alcohol_frequency}
+                onChange={(e) => update('alcohol_frequency', e.target.value)}
+                style={darkSelect}
+              >
+                <option value="">Select frequency</option>
+                {ALCOHOL_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+              {errors.alcohol_frequency && <div style={errorText}>{errors.alcohol_frequency}</div>}
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>How would you describe your eating habits?</label>
+              <select
+                value={fields.diet_quality}
+                onChange={(e) => update('diet_quality', e.target.value)}
+                style={darkSelect}
+              >
+                <option value="">Describe your diet</option>
+                {DIET_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+              {errors.diet_quality && <div style={errorText}>{errors.diet_quality}</div>}
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>How many hours a week do you work? (optional)</label>
               <input
                 type="number"
                 min={0}
@@ -643,135 +838,292 @@ const IntakeMultiStepForm: React.FC<IntakeMultiStepFormProps> = ({
                 placeholder="e.g. 40"
               />
             </div>
+          </div>
+        )}
+
+        {/* ── Step 3: Rest & Recovery ── */}
+        {step === 3 && (
+          <div>
+            <div style={stepHeading}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>🌙</div>
+              <h3 style={stepTitle}>How are you resting and recovering?</h3>
+              <p style={stepSubtitle}>
+                Sleep and stress management are foundational to executive performance and long-term health.
+              </p>
+            </div>
+
             <div style={fieldGroup}>
-              <label style={labelStyle}>Social Connections</label>
+              <label style={labelStyle}>
+                How many hours of sleep do you typically get? &nbsp;
+                <span style={{ color: '#60a5fa', fontWeight: 700, fontSize: 'clamp(14px, 2.2vw, 16px)' }}>
+                  {fields.sleep_hours || 7}h
+                </span>
+              </label>
+              <input
+                type="range"
+                min={3}
+                max={14}
+                step={0.5}
+                value={fields.sleep_hours || 7}
+                onChange={(e) => update('sleep_hours', Number(e.target.value))}
+                className="eh-intake-range"
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#64748b', marginTop: 4 }}>
+                <span>3h</span><span>7h</span><span>14h</span>
+              </div>
+              {errors.sleep_hours && <div style={errorText}>{errors.sleep_hours}</div>}
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>How well do you sleep?</label>
+              <select
+                value={fields.sleep_quality}
+                onChange={(e) => update('sleep_quality', e.target.value)}
+                style={darkSelect}
+              >
+                <option value="">Describe your sleep quality</option>
+                {SLEEP_QUALITY_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+              {errors.sleep_quality && <div style={errorText}>{errors.sleep_quality}</div>}
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>How would you rate your stress levels?</label>
+              <select
+                value={fields.stress_level}
+                onChange={(e) => update('stress_level', e.target.value)}
+                style={darkSelect}
+              >
+                <option value="">Describe your stress level</option>
+                {STRESS_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+              {errors.stress_level && <div style={errorText}>{errors.stress_level}</div>}
+            </div>
+
+            <div style={fieldGroup}>
+              <label style={labelStyle}>How connected do you feel socially? (optional)</label>
               <select
                 value={fields.social_connections}
                 onChange={(e) => update('social_connections', e.target.value)}
                 style={darkSelect}
               >
-                <option value="">Select</option>
+                <option value="">Describe your social life</option>
                 {SOCIAL_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ── Step 4: Vitals ── */}
-      {step === 4 && (
-        <div>
-          <h3 style={{ color: '#ffffff', fontSize: 18, marginBottom: 20 }}>Vitals (optional)</h3>
+        {/* ── Step 4: Health Background ── */}
+        {step === 4 && (
+          <div>
+            <div style={stepHeading}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>🏥</div>
+              <h3 style={stepTitle}>What&apos;s your health background?</h3>
+              <p style={stepSubtitle}>
+                This helps us identify risk factors and tailor our recommendations. Everything here is confidential.
+              </p>
+            </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div style={fieldGroup}>
-              <label style={labelStyle}>Systolic BP (mmHg)</label>
-              <input
-                type="number"
-                min={70}
-                max={250}
-                value={fields.systolic_bp}
-                onChange={(e) => update('systolic_bp', e.target.value === '' ? '' : Number(e.target.value))}
-                style={darkInput}
-                placeholder="e.g. 120"
-              />
-              {errors.systolic_bp && <div style={errorText}>{errors.systolic_bp}</div>}
+              <label style={labelStyle}>Any chronic conditions? <span style={{ color: '#64748b', fontWeight: 400 }}>(select all that apply)</span></label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {CHRONIC_CONDITIONS.map((c) => (
+                  <span
+                    key={c}
+                    style={getTagStyle(fields.chronic_conditions.includes(c))}
+                    onClick={() => toggleArray('chronic_conditions', c)}
+                  >
+                    {fields.chronic_conditions.includes(c) ? '✓ ' : ''}{c}
+                  </span>
+                ))}
+              </div>
             </div>
+
             <div style={fieldGroup}>
-              <label style={labelStyle}>Diastolic BP (mmHg)</label>
+              <label style={labelStyle}>Current medications? <span style={{ color: '#64748b', fontWeight: 400 }}>(separate with commas)</span></label>
               <input
-                type="number"
-                min={40}
-                max={150}
-                value={fields.diastolic_bp}
-                onChange={(e) => update('diastolic_bp', e.target.value === '' ? '' : Number(e.target.value))}
+                type="text"
+                value={fields.medications}
+                onChange={(e) => update('medications', e.target.value)}
                 style={darkInput}
-                placeholder="e.g. 80"
+                placeholder="e.g. Lisinopril, Metformin, Atorvastatin"
               />
-              {errors.diastolic_bp && <div style={errorText}>{errors.diastolic_bp}</div>}
             </div>
+
             <div style={fieldGroup}>
-              <label style={labelStyle}>Resting HR (bpm)</label>
-              <input
-                type="number"
-                min={30}
-                max={220}
-                value={fields.resting_hr}
-                onChange={(e) => update('resting_hr', e.target.value === '' ? '' : Number(e.target.value))}
-                style={darkInput}
-                placeholder="e.g. 68"
-              />
-              {errors.resting_hr && <div style={errorText}>{errors.resting_hr}</div>}
-            </div>
-            <div style={fieldGroup}>
-              <label style={labelStyle}>Total Cholesterol (mg/dL)</label>
-              <input
-                type="number"
-                min={100}
-                max={500}
-                value={fields.cholesterol_total}
-                onChange={(e) => update('cholesterol_total', e.target.value === '' ? '' : Number(e.target.value))}
-                style={darkInput}
-                placeholder="e.g. 190"
-              />
-              {errors.cholesterol_total && <div style={errorText}>{errors.cholesterol_total}</div>}
-            </div>
-            <div style={fieldGroup}>
-              <label style={labelStyle}>HDL Cholesterol (mg/dL)</label>
-              <input
-                type="number"
-                min={10}
-                max={150}
-                value={fields.hdl_cholesterol}
-                onChange={(e) => update('hdl_cholesterol', e.target.value === '' ? '' : Number(e.target.value))}
-                style={darkInput}
-                placeholder="e.g. 55"
-              />
-              {errors.hdl_cholesterol && <div style={errorText}>{errors.hdl_cholesterol}</div>}
-            </div>
-            <div style={fieldGroup}>
-              <label style={labelStyle}>Fasting Glucose (mg/dL)</label>
-              <input
-                type="number"
-                min={50}
-                max={400}
-                value={fields.fasting_glucose}
-                onChange={(e) => update('fasting_glucose', e.target.value === '' ? '' : Number(e.target.value))}
-                style={darkInput}
-                placeholder="e.g. 95"
-              />
-              {errors.fasting_glucose && <div style={errorText}>{errors.fasting_glucose}</div>}
+              <label style={labelStyle}>Conditions that run in your family? <span style={{ color: '#64748b', fontWeight: 400 }}>(select all that apply)</span></label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {FAMILY_HISTORY_OPTIONS.map((c) => (
+                  <span
+                    key={c}
+                    style={getTagStyle(fields.family_history.includes(c))}
+                    onClick={() => toggleArray('family_history', c)}
+                  >
+                    {fields.family_history.includes(c) ? '✓ ' : ''}{c}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ── Navigation Buttons ── */}
-      <div style={buttonRow}>
-        <button
-          style={step === 0 ? { ...btnSecondary, visibility: 'hidden' } : btnSecondary}
-          onClick={handlePrev}
-          disabled={isSubmitting}
-        >
-          ← Previous
-        </button>
+        {/* ── Step 5: Vitals ── */}
+        {step === 5 && (
+          <div>
+            <div style={stepHeading}>
+              <div style={{ fontSize: 28, marginBottom: 8 }}>🩺</div>
+              <h3 style={stepTitle}>Got recent vitals?</h3>
+              <p style={stepSubtitle}>
+                If you&apos;ve had a checkup recently, your numbers help us be more precise.
+              </p>
+            </div>
 
-        {step < STEPS.length - 1 ? (
-          <button style={btnPrimary} onClick={handleNext}>
-            Next →
-          </button>
-        ) : (
-          <button
-            style={isSubmitting ? btnDisabled : { ...btnPrimary, backgroundColor: '#22c55e' }}
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit Assessment'}
-          </button>
+            <div style={skipNote}>
+              💡 <strong style={{ color: '#cbd5e1' }}>Don&apos;t have these numbers handy?</strong> No problem — just skip this section.
+              We&apos;ll estimate based on your other answers and you can add them later.
+            </div>
+
+            <div className="eh-intake-grid-2">
+              <div style={fieldGroup}>
+                <label style={labelStyle}>Systolic BP (mmHg)</label>
+                <input
+                  type="number"
+                  min={70}
+                  max={250}
+                  value={fields.systolic_bp}
+                  onChange={(e) => update('systolic_bp', e.target.value === '' ? '' : Number(e.target.value))}
+                  style={darkInput}
+                  placeholder="e.g. 120"
+                />
+                {errors.systolic_bp && <div style={errorText}>{errors.systolic_bp}</div>}
+              </div>
+              <div style={fieldGroup}>
+                <label style={labelStyle}>Diastolic BP (mmHg)</label>
+                <input
+                  type="number"
+                  min={40}
+                  max={150}
+                  value={fields.diastolic_bp}
+                  onChange={(e) => update('diastolic_bp', e.target.value === '' ? '' : Number(e.target.value))}
+                  style={darkInput}
+                  placeholder="e.g. 80"
+                />
+                {errors.diastolic_bp && <div style={errorText}>{errors.diastolic_bp}</div>}
+              </div>
+              <div style={fieldGroup}>
+                <label style={labelStyle}>Resting Heart Rate (bpm)</label>
+                <input
+                  type="number"
+                  min={30}
+                  max={220}
+                  value={fields.resting_hr}
+                  onChange={(e) => update('resting_hr', e.target.value === '' ? '' : Number(e.target.value))}
+                  style={darkInput}
+                  placeholder="e.g. 68"
+                />
+                {errors.resting_hr && <div style={errorText}>{errors.resting_hr}</div>}
+              </div>
+              <div style={fieldGroup}>
+                <label style={labelStyle}>Total Cholesterol (mg/dL)</label>
+                <input
+                  type="number"
+                  min={100}
+                  max={500}
+                  value={fields.cholesterol_total}
+                  onChange={(e) => update('cholesterol_total', e.target.value === '' ? '' : Number(e.target.value))}
+                  style={darkInput}
+                  placeholder="e.g. 190"
+                />
+                {errors.cholesterol_total && <div style={errorText}>{errors.cholesterol_total}</div>}
+              </div>
+              <div style={fieldGroup}>
+                <label style={labelStyle}>HDL Cholesterol (mg/dL)</label>
+                <input
+                  type="number"
+                  min={10}
+                  max={150}
+                  value={fields.hdl_cholesterol}
+                  onChange={(e) => update('hdl_cholesterol', e.target.value === '' ? '' : Number(e.target.value))}
+                  style={darkInput}
+                  placeholder="e.g. 55"
+                />
+                {errors.hdl_cholesterol && <div style={errorText}>{errors.hdl_cholesterol}</div>}
+              </div>
+              <div style={fieldGroup}>
+                <label style={labelStyle}>Fasting Glucose (mg/dL)</label>
+                <input
+                  type="number"
+                  min={50}
+                  max={400}
+                  value={fields.fasting_glucose}
+                  onChange={(e) => update('fasting_glucose', e.target.value === '' ? '' : Number(e.target.value))}
+                  style={darkInput}
+                  placeholder="e.g. 95"
+                />
+                {errors.fasting_glucose && <div style={errorText}>{errors.fasting_glucose}</div>}
+              </div>
+            </div>
+          </div>
         )}
       </div>
+
+      {/* ── Navigation Buttons ── */}
+      {step > 0 && (
+        <div
+          className="eh-intake-btn-row"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: 32,
+            gap: 12,
+            flexWrap: 'wrap',
+          }}
+        >
+          <button
+            className="eh-intake-btn eh-intake-btn-secondary"
+            onClick={handlePrev}
+            disabled={isSubmitting}
+          >
+            ← Back
+          </button>
+
+          {step < STEPS.length - 1 ? (
+            <button className="eh-intake-btn eh-intake-btn-primary" onClick={handleNext}>
+              Continue →
+            </button>
+          ) : (
+            <button
+              className={`eh-intake-btn ${isSubmitting ? '' : 'eh-intake-btn-success'}`}
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              style={isSubmitting ? {
+                backgroundColor: '#1e293b',
+                color: '#64748b',
+                cursor: 'not-allowed',
+                padding: 'clamp(12px, 2.5vw, 14px) clamp(24px, 5vw, 32px)',
+                minHeight: 48,
+                border: 'none',
+                borderRadius: 10,
+                fontSize: 'clamp(14px, 2.2vw, 15px)',
+                fontWeight: 600,
+              } : {
+                padding: 'clamp(12px, 2.5vw, 14px) clamp(24px, 5vw, 32px)',
+                minHeight: 48,
+                borderRadius: 12,
+              }}
+            >
+              {isSubmitting ? 'Generating Your Score...' : '✨ Generate My Health Score'}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

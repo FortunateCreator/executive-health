@@ -1,0 +1,17 @@
+{
+  "name": "@executive-health/sleep",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/scoring.ts",
+  "types": "./src/scoring.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@executive-health/db": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

@@ -40,6 +40,13 @@ export const intakeFormSchema = z.object({
 export type IntakeFormData = z.infer<typeof intakeFormSchema>;
 
 // === HEALTH SCORE ===
+export interface DetailedRecommendation {
+  heading: string;
+  detail: string;
+  action: string;
+  category: 'cardiovascular' | 'metabolic' | 'lifestyle' | 'mental_wellbeing' | 'general';
+}
+
 export interface HealthScore {
   overall: number;           // 0-100
   cardiovascular: number;
@@ -48,7 +55,7 @@ export interface HealthScore {
   mental_wellbeing: number;
   risk_category: RiskCategory;
   risk_factors: RiskFactor[];
-  recommendations: string[];
+  recommendations: DetailedRecommendation[];
   score_breakdown: ScoreBreakdown[];
   calculated_at: string;     // ISO date
 }
@@ -104,4 +111,122 @@ export interface ApiError {
   error: string;
   code: string;
   details?: unknown;
+}
+
+// === ORGANIZATION ===
+export type OrgRole = 'super_admin' | 'admin' | 'manager' | 'viewer';
+export type OrgMemberStatus = 'invited' | 'active' | 'suspended';
+export type SubscriptionTier = 'free' | 'basic' | 'premium' | 'enterprise';
+export type InviteStatus = 'pending' | 'accepted' | 'expired';
+export type OrgSize = '1-10' | '11-50' | '51-200' | '201-1000' | '1000+';
+
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  logo_url?: string;
+  industry?: string;
+  size?: OrgSize;
+  subscription_tier: SubscriptionTier;
+  settings: {
+    wellness_programs_enabled: boolean;
+    auto_invite_domain?: string;
+    data_retention_days: number;
+  };
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrgMember {
+  id: string;
+  org_id: string;
+  user_id: string;
+  email: string;
+  display_name: string;
+  role: OrgRole;
+  department_id?: string;
+  invited_by?: string;
+  status: OrgMemberStatus;
+  joined_at?: string;
+  created_at: string;
+}
+
+export interface Department {
+  id: string;
+  org_id: string;
+  name: string;
+  description?: string;
+  head_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrgInvite {
+  id: string;
+  org_id: string;
+  email: string;
+  role: OrgRole;
+  department_id?: string;
+  token: string;
+  invited_by: string;
+  invited_by_name: string;
+  status: InviteStatus;
+  expires_at: string;
+  created_at: string;
+}
+
+export interface OrgAnalytics {
+  org_id: string;
+  total_members: number;
+  active_members: number;
+  engagement_rate: number;
+  average_health_score: number;
+  health_score_trend: Array<{ date: string; score: number }>;
+  department_breakdown: Array<{ department: string; members: number; avg_score: number; engagement: number }>;
+  risk_distribution: { low: number; moderate: number; high: number; critical: number };
+  sleep_avg_hours: number;
+  stress_avg_level: number;
+  last_updated: string;
+}
+
+// === CLINICAL ===
+export type StaffRole = 'clinician' | 'nurse' | 'admin' | 'supervisor';
+export type NoteType = 'soap' | 'progress' | 'consult' | 'discharge';
+
+export interface ClinicalStaff {
+  id: string;
+  user_id: string;
+  email: string;
+  display_name: string;
+  title: string;
+  specialization?: string;
+  role: StaffRole;
+  license_number?: string;
+  created_at: string;
+}
+
+export interface ClinicalNote {
+  id: string;
+  patient_user_id: string;
+  staff_id: string;
+  staff_name: string;
+  note_type: NoteType;
+  subjective: string;
+  objective: string;
+  assessment: string;
+  plan: string;
+  is_private: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PatientSummary {
+  user_id: string;
+  display_name: string;
+  email: string;
+  risk_category: string;
+  last_score: number;
+  days_since_assessment: number;
+  last_appointment?: string;
+  assigned_staff_name?: string;
 }

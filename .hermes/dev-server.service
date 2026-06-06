@@ -1,0 +1,17 @@
+[Unit]
+Description=Executive Health Next.js Dev Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/executive-health/apps/web
+ExecStartPre=/bin/bash -c 'kill $(lsof -ti:3000 2>/dev/null) 2>/dev/null; sleep 1; rm -rf /root/executive-health/apps/web/.next/server 2>/dev/null'
+ExecStart=/usr/bin/env npx next dev -p 3000
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=development
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@executive-health/analytics": "workspace:*",
     "@executive-health/core": "workspace:*",
     "openai": "^4.0.0",
     "zod": "^3.23.0"

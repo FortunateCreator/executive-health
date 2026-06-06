@@ -6,19 +6,148 @@ settings:
 
 importers:
 
-  .: {}
-
-  apps/web:
+  .:
     dependencies:
-      '@executive-health/ai':
+      http-proxy:
+        specifier: ^1.18.1
+        version: 1.18.1
+
+  apps/dashboard:
+    dependencies:
+      '@executive-health/analytics':
         specifier: workspace:*
-        version: link:../../packages/ai
+        version: link:../../packages/analytics
       '@executive-health/core':
         specifier: workspace:*
         version: link:../../packages/core
       '@executive-health/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@executive-health/organizations':
+        specifier: workspace:*
+        version: link:../../packages/organizations
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
+      jsonwebtoken:
+        specifier: ^9.0.0
+        version: 9.0.3
+      next:
+        specifier: ^16.0.0
+        version: 16.2.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.7(react@19.2.7)
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
+    devDependencies:
+      '@types/bcryptjs':
+        specifier: ^2.4.0
+        version: 2.4.6
+      '@types/jsonwebtoken':
+        specifier: ^9.0.0
+        version: 9.0.10
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.16
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.16)
+      '@types/uuid':
+        specifier: ^9.0.0
+        version: 9.0.8
+      tailwindcss:
+        specifier: ^4.3.0
+        version: 4.3.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
+  apps/ops:
+    dependencies:
+      '@executive-health/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
+      '@executive-health/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@executive-health/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
+      jsonwebtoken:
+        specifier: ^9.0.0
+        version: 9.0.3
+      next:
+        specifier: ^16.0.0
+        version: 16.2.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.7(react@19.2.7)
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
+    devDependencies:
+      '@types/bcryptjs':
+        specifier: ^2.4.0
+        version: 2.4.6
+      '@types/jsonwebtoken':
+        specifier: ^9.0.0
+        version: 9.0.10
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.16
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.16)
+      '@types/uuid':
+        specifier: ^9.0.0
+        version: 9.0.8
+      tailwindcss:
+        specifier: ^4.0.0
+        version: 4.3.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
+  apps/web:
+    dependencies:
+      '@executive-health/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
+      '@executive-health/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
+      '@executive-health/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@executive-health/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@executive-health/nutrition':
+        specifier: workspace:*
+        version: link:../../packages/nutrition
+      '@executive-health/sleep':
+        specifier: workspace:*
+        version: link:../../packages/sleep
+      '@executive-health/stress':
+        specifier: workspace:*
+        version: link:../../packages/stress
       '@executive-health/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -65,6 +194,9 @@ importers:
 
   packages/ai:
     dependencies:
+      '@executive-health/analytics':
+        specifier: workspace:*
+        version: link:../analytics
       '@executive-health/core':
         specifier: workspace:*
         version: link:../core
@@ -78,6 +210,19 @@ importers:
       '@types/node':
         specifier: ^20.19.41
         version: 20.19.41
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
+  packages/analytics:
+    dependencies:
+      '@executive-health/core':
+        specifier: workspace:*
+        version: link:../core
+      '@executive-health/db':
+        specifier: workspace:*
+        version: link:../db
+    devDependencies:
       typescript:
         specifier: ^5.5.0
         version: 5.9.3
@@ -104,6 +249,55 @@ importers:
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.41
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
+  packages/nutrition:
+    dependencies:
+      '@executive-health/db':
+        specifier: workspace:*
+        version: link:../db
+    devDependencies:
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
+  packages/organizations:
+    dependencies:
+      '@executive-health/core':
+        specifier: workspace:*
+        version: link:../core
+      '@executive-health/db':
+        specifier: workspace:*
+        version: link:../db
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+    devDependencies:
+      '@types/uuid':
+        specifier: ^9.0.8
+        version: 9.0.8
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
+  packages/sleep:
+    dependencies:
+      '@executive-health/db':
+        specifier: workspace:*
+        version: link:../db
+    devDependencies:
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
+  packages/stress:
+    dependencies:
+      '@executive-health/db':
+        specifier: workspace:*
+        version: link:../db
+    devDependencies:
       typescript:
         specifier: ^5.5.0
         version: 5.9.3
@@ -463,6 +657,18 @@ packages:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
 
+  eventemitter3@4.0.7:
+    resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+
+  follow-redirects@1.16.0:
+    resolution: {integrity: sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+
   form-data-encoder@1.7.2:
     resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
 
@@ -500,6 +706,10 @@ packages:
   hasown@2.0.4:
     resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
     engines: {node: '>= 0.4'}
+
+  http-proxy@1.18.1:
+    resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
+    engines: {node: '>=8.0.0'}
 
   humanize-ms@1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
@@ -625,6 +835,9 @@ packages:
     resolution: {integrity: sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ==}
     engines: {node: '>=0.10.0'}
 
+  requires-port@1.0.0:
+    resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
+
   retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
     engines: {node: '>= 4'}
@@ -660,6 +873,9 @@ packages:
         optional: true
       babel-plugin-macros:
         optional: true
+
+  tailwindcss@4.3.0:
+    resolution: {integrity: sha512-y6nxMGB1nMW9R6k96e5gdIFzcfL/gTJRNaqGes1YvkLnPVXzWgbqFF2yLC0T8G774n24cx3Pe8XrKoniCOAH+Q==}
 
   throttleit@2.1.0:
     resolution: {integrity: sha512-nt6AMGKW1p/70DF/hGBdJB57B8Tspmbp5gfJ8ilhLnt7kkr2ye7hzD6NVG8GGErk2HWF34igrL2CXmNIkzKqKw==}
@@ -951,6 +1167,10 @@ snapshots:
 
   event-target-shim@5.0.1: {}
 
+  eventemitter3@4.0.7: {}
+
+  follow-redirects@1.16.0: {}
+
   form-data-encoder@1.7.2: {}
 
   form-data@4.0.5:
@@ -997,6 +1217,14 @@ snapshots:
   hasown@2.0.4:
     dependencies:
       function-bind: 1.1.2
+
+  http-proxy@1.18.1:
+    dependencies:
+      eventemitter3: 4.0.7
+      follow-redirects: 1.16.0
+      requires-port: 1.0.0
+    transitivePeerDependencies:
+      - debug
 
   humanize-ms@1.2.1:
     dependencies:
@@ -1115,6 +1343,8 @@ snapshots:
 
   react@19.2.7: {}
 
+  requires-port@1.0.0: {}
+
   retry@0.13.1: {}
 
   safe-buffer@5.2.1: {}
@@ -1161,6 +1391,8 @@ snapshots:
     dependencies:
       client-only: 0.0.1
       react: 19.2.7
+
+  tailwindcss@4.3.0: {}
 
   throttleit@2.1.0: {}
 

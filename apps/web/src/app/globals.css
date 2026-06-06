@@ -1,17 +1,175 @@
+/* ═══════════════════════════════════════════════════════
+   Executive Health — Design System
+   ═══════════════════════════════════════════════════════ */
+
 :root {
-  --bg-primary: #0f0f23;
-  --bg-secondary: #1a1a2e;
-  --bg-card: #16213e;
+  /* Background hierarchy */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #14141f;
+  --bg-card: #1a1a2e;
+  --bg-card-hover: #1d1d35;
+
+  /* Accent */
   --accent: #0f3460;
-  --accent-light: #1a5276;
-  --text-primary: #e0e0e0;
-  --text-secondary: #a0a0b0;
-  --text-muted: #6b7280;
+  --accent-light: #6366f1;
+  --accent-glow: rgba(99, 102, 241, 0.15);
+
+  /* Text */
+  --text-primary: #e8e8f0;
+  --text-secondary: #9898b0;
+  --text-muted: #6b6b80;
+
+  /* Semantic */
   --success: #22c55e;
-  --warning: #eab308;
+  --warning: #f59e0b;
   --danger: #ef4444;
-  --border: #2a2a4e;
+  --info: #3b82f6;
+
+  /* Borders */
+  --border: #2a2a3e;
+  --border-light: rgba(255, 255, 255, 0.06);
+  --border-focus: #6366f1;
+
+  /* Spacing scale (clamped for fluidity) */
+  --eh-gap-xs: clamp(4px, 0.8vw, 6px);
+  --eh-gap-sm: clamp(6px, 1.2vw, 8px);
+  --eh-gap-md: clamp(8px, 1.8vw, 12px);
+  --eh-gap-lg: clamp(12px, 2.5vw, 16px);
+  --eh-gap-xl: clamp(16px, 3.5vw, 24px);
+  --eh-gap-2xl: clamp(20px, 4.5vw, 32px);
+  --eh-gap-3xl: clamp(24px, 5.5vw, 40px);
+
+  /* Radius */
+  --eh-radius-sm: 6px;
+  --eh-radius-md: 8px;
+  --eh-radius-lg: 12px;
+  --eh-radius-xl: 16px;
+  --eh-radius-full: 9999px;
+
+  /* Typography scale */
+  --eh-text-xs: clamp(10px, 1.4vw, 11px);
+  --eh-text-sm: clamp(11px, 1.7vw, 12px);
+  --eh-text-base: clamp(13px, 2vw, 14px);
+  --eh-text-md: clamp(14px, 2.2vw, 16px);
+  --eh-text-lg: clamp(16px, 2.8vw, 20px);
+  --eh-text-xl: clamp(18px, 3.5vw, 24px);
+  --eh-text-2xl: clamp(20px, 4vw, 28px);
+  --eh-text-3xl: clamp(24px, 5vw, 32px);
+
+  /* Layout */
+  --eh-sidebar-width: 240px;
+  --eh-sidebar-collapsed-width: 68px;
+  --eh-header-height: 56px;
+  --eh-content-max: 1200px;
+  --eh-content-narrow: 700px;
+
+  /* Transitions */
+  --eh-transition-fast: 0.15s ease;
+  --eh-transition: 0.2s ease;
+  --eh-transition-slow: 0.3s ease;
+  --eh-transition-spring: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Shadows */
+  --eh-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --eh-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --eh-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --eh-shadow-xl: 0 12px 40px rgba(0, 0, 0, 0.6);
 }
+
+/* ═══════════════════════════════════════════════════════
+   Keyframe Animations
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes eh-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes eh-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes eh-fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes eh-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes eh-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes eh-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes eh-pulse-gentle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes eh-pulse-ring {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+}
+
+@keyframes eh-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   Base Reset
+   ═══════════════════════════════════════════════════════ */
 
 * {
   box-sizing: border-box;
@@ -22,8 +180,11 @@
 html, body {
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 a {
@@ -35,6 +196,7 @@ input, select, textarea, button {
   font-family: inherit;
 }
 
+/* ── Base form elements ── */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -44,31 +206,116 @@ textarea {
   background: var(--bg-card);
   border: 1px solid var(--border);
   color: var(--text-primary);
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: clamp(10px, 2vw, 12px) clamp(12px, 2vw, 14px);
+  border-radius: var(--eh-radius-md);
+  font-size: clamp(14px, 2.2vw, 15px);
   width: 100%;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color var(--eh-transition), box-shadow var(--eh-transition);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-input:focus, select:focus, textarea:focus {
-  border-color: var(--accent-light);
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 button {
   cursor: pointer;
+  transition: all var(--eh-transition);
 }
 
+button:active {
+  transform: scale(0.98);
+}
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a5e;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Utility Classes
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Animation utilities ── */
+.eh-animate-fade-in {
+  animation: eh-fade-in var(--eh-transition-slow) ease forwards;
+}
+
+.eh-animate-fade-in-up {
+  animation: eh-fade-in-up 0.4s ease forwards;
+}
+
+.eh-animate-slide-in-right {
+  animation: eh-slide-in-right 0.35s ease forwards;
+}
+
+.eh-animate-scale-in {
+  animation: eh-scale-in 0.3s ease forwards;
+}
+
+/* Stagger children */
+.eh-stagger > * {
+  opacity: 0;
+  animation: eh-fade-in-up 0.4s ease forwards;
+}
+
+.eh-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.eh-stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.eh-stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.eh-stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.eh-stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.eh-stagger > *:nth-child(6) { animation-delay: 0.3s; }
+.eh-stagger > *:nth-child(7) { animation-delay: 0.35s; }
+.eh-stagger > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* ── Pulse for score ring ── */
+.eh-pulse-gentle {
+  animation: eh-pulse-gentle 3s ease-in-out infinite;
+}
+
+/* ── Hover lift for cards ── */
+.eh-card-lift {
+  transition: transform var(--eh-transition), box-shadow var(--eh-transition), border-color var(--eh-transition);
+}
+
+.eh-card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--eh-shadow-lg);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Skip link for accessibility ── */
+.eh-skip-link {
+  position: absolute;
+  top: -100%;
+  left: 8px;
+  background: var(--accent-light);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--eh-radius-md);
+  z-index: 10000;
+  font-weight: 600;
+  transition: top 0.2s;
+}
+
+.eh-skip-link:focus {
+  top: 8px;
 }

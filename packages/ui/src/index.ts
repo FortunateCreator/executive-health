@@ -3,3 +3,8 @@ export { default as IntakeMultiStepForm } from './IntakeMultiStepForm';
 export { default as TrendChartSimplified } from './TrendChartSimplified';
 export { default as RiskBadge } from './RiskBadge';
 export { default as DashboardLayout } from './DashboardLayout';
+export { default as AlertBanner } from './AlertBanner';
+export type { AlertData } from './AlertBanner';
+export { default as TrendCard } from './TrendCard';
+export type { TrendData } from './TrendCard';
+export { default as SleepIdleDetector } from './SleepIdleDetector';
